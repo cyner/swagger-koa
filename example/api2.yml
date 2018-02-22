@@ -1,0 +1,23 @@
+resourcePath: /apiYml
+description: All about API
+apis:
+
+  /user:
+    get:
+      summary: Get User Information
+      description: Returns a User
+      parameters:
+        - id: user id
+          in: formData
+          description: A valid user id
+          type: integer
+          required: true
+
+      tags:
+        - User Api
+
+      responses:
+        '200':
+          description: Signup verification token
+          schema:
+            $ref: '#/definitions/User'

@@ -11,7 +11,7 @@ __{swagger-koa}__ is a simple and clean solution to integrate swagger with koa.
 
     $ npm install swagger-koa
 
-## Quick Start
+## Quick Start Swagger 1
 
 Configure {swagger-koa} as koa middleware.
 
@@ -204,6 +204,165 @@ Example 'api.coffee'
 ###
 ```
 
+## Quick Start Swagger 2
+
+Configure {swagger-koa} as koa middleware.
+
+`debug`           -> log debug information.
+
+`swaggerUI`       -> Where is your swagger-ui?
+
+`swaggerURL`      -> Path to use for swagger ui web interface.
+
+`swaggerJSON`     -> Path to use for swagger ui JSON.
+
+`descriptor`      -> [Metadata][descriptor] about the API
+
+`apis`            -> Define your api array.
+
+```
+var swagger = require('swagger-koa');
+
+app.use(swagger.init({
+  debug: true,
+
+  swaggerURL: '/swagger',
+  swaggerJSON: '/api/v1/docs.json',
+  swaggerUI: './public/swagger/',
+
+  descriptor: {
+    "swagger": "2.0",
+    "info": {
+        "title": "swagger-koa sample app",
+        "description": "Swagger + Koa = {swagger-koa}",
+        "version": "0.1.0"
+    },
+    "host": "localhost:3000",
+    "schemes": [
+        "http"
+    ],
+    "basePath": "/",
+    "produces": [
+        "application/json"
+    ],
+  },
+  apis: ['./api.js', './api.yml', './common.yml']
+}));
+  ...
+```
+
+[info]: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md
+
+## Read from jsdoc
+
+Example 'api.js'
+
+```js
+
+/**
+ * @swagger
+ * resourcePath: /api
+ * description: All about API
+ */
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Login with username and password
+ *     description: Returns a user based on username
+ *     tags:
+ *       - Api
+ *
+ *     parameters:
+ *       - name: username
+ *         in: formData
+ *         description: Your username
+ *         required: true
+ *         type: string
+ *       - name: password
+ *         in: formData
+ *         description: Your password
+ *         required: true
+ *         type: string
+ *
+ *     responses:
+ *       '200':
+ *         description: Signup verification token
+ *         schema:
+ *           $ref: '#/definitions/User'
+ *
+ */
+
+exports.login = function *() {
+  var user = {}
+    , query = this.request.query;
+
+  user.username = query.username;
+  user.password = query.password;
+
+  this.body = user;
+};
+
+/**
+ * swagger
+ * definitions:
+ *   User:
+ *     properties:
+ *       username:
+ *         type: string
+ *         description: Username
+ *       password:
+ *         type: string
+ *         description: Password
+ */
+```
+
+## Read from yaml file
+
+Example 'api.yml'
+
+```yml
+resourcePath: /api
+description: All about API
+apis:
+  /login:
+    post:
+      summary: Login with username and password
+      description: Returns a user based on username
+      parameters:
+        - name: username
+          in: formData
+          description: Your username
+          type: string
+          required: true
+        - name: password
+          in: formData
+          description: Your password
+          type: string
+          required: true
+
+      tags:
+        - Authentication
+
+      responses:
+        '200':
+          description: Signup verification token
+          schema:
+            $ref: '#/definitions/User'
+
+definitions:
+  User:
+    properties:
+      username:
+        type: string
+        description: Username
+      password:
+        type: string
+        description: Password
+
+```
+
 
 ## Examples
 
@@ -213,10 +372,15 @@ Clone the {swagger-koa} repo, then install the dev dependencies:
     $ cd swagger-koa
     $ npm install
 
-and run the example:
+and run the example for swagger 1:
 
     $ cd example
     $ node --harmony app.js
+
+or run the example for swagger 2:
+
+    $ cd example
+    $ node --harmony app2.js
 
 # Credits
 

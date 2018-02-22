@@ -1,0 +1,12 @@
+resourcePath: /common
+description: Common Definitions
+
+definitions:
+  User:
+    properties:
+      username:
+        type: string
+        description: Username
+      password:
+        type: string
+        description: Password
